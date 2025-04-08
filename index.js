@@ -1,15 +1,19 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom"; // ✅ Import BrowserRouter
+import App from "./App";
+import { CartProvider } from "./context/CartContext"; // ✅ Import CartProvider
+import { AuthProvider } from "./context/AuthContext"; // ✅ Import AuthProviderimport { AuthProvider } from "./context/AuthContext";
 
-dotenv.config();
-connectDB();
-
-const app = express();
-
-app.use(express.json());
-app.use("/api/auth", authRoutes);
-
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>  
+      <AuthProvider>  {/* ✅ Wrap App inside AuthProvider */}
+        <CartProvider>  
+          <App />
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
