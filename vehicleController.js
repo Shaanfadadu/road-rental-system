@@ -1,23 +1,39 @@
-const Vehicle = require('C:\\Users\\shaan\\OneDrive\\Desktop\\sem 6\\mini project\\project - Copy\\road-runner-rentals\\backend\\models\\Vehicle.js');
+const Vehicle = require("../models/Vehicle");
 
-const getVehicles = async (req, res) => {
+exports.getVehicles = async (req, res) => {
   try {
     const vehicles = await Vehicle.find();
-    res.json(vehicles);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching vehicles' });
+    res.status(200).json(vehicles);
+  } catch {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const addVehicle = async (req, res) => {
-  const { owner, name, model, price } = req.body;
+exports.addVehicle = async (req, res) => {
+  const vehicle = new Vehicle(req.body);
   try {
-    const newVehicle = new Vehicle({ owner, name, model, price });
-    await newVehicle.save();
-    res.status(201).json(newVehicle);
-  } catch (error) {
-    res.status(500).json({ message: 'Error adding vehicle' });
+    await vehicle.save();
+    res.status(201).json(vehicle);
+  } catch {
+    res.status(500).json({ message: "Error saving vehicle" });
   }
 };
 
-module.exports = { getVehicles, addVehicle };
+exports.getVehicleById = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (!vehicle) return res.status(404).json({ message: "Not found" });
+    res.json(vehicle);
+  } catch {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.deleteVehicle = async (req, res) => {
+  try {
+    await Vehicle.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Deleted" });
+  } catch {
+    res.status(500).json({ message: "Server error" });
+  }
+};
